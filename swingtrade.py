@@ -49,10 +49,25 @@ def save_for_day(current_eth_value):
 	print("Today's Profits\n-----------------\nETH Profit: {} | Percent Profit: {} | Dollar Value: {}".format(profit_since_last, (profit_since_last/last_eth_value)*100, dollar_value))
 	return
 
+def short():
+	# nano_amount = float(input("Enter nano amount: "))
+	nano_amount = 1
+	price = float(input("Enter price: "))
+	fee = 0.01/100
+	sold_eth_amnt = (nano_amount*price)*(1-fee)
+	percent_buyback = float(input("Percent lower to buyback: "))
+	buy_back_price = price*(1-(percent_buyback)/100)
+	buyback_nano_amount = sold_eth_amnt/buy_back_price
+	nano_profit = buyback_nano_amount-nano_amount 
+	breakeven_price = price*(1+fee)
+
+	print("Sell at {} | Buy back at {:6f} | Gain {:3f} Nanos | Breakeven Buyback: {}".format(price, buy_back_price, nano_profit, breakeven_price))
+
+
 def main(): 
 	eth_price_list = current_eth_value_insys()
 	current_eth_value = eth_price_list[-1]
-	option = int(input("1. Swingtrade | 2. Profit | 3. Enter ETH Value | 4. End of Day\n1 or 2 or 3: "))
+	option = int(input("1. Swingtrade | 2. Profit | 3. Enter ETH Value | 4. End of Day | 5. Short Nano : "))
 	if option == 1: #Swingtrade
 		lastprice = float(input("Buy in: "))
 		delta = float(input("Percent Increase: "))
@@ -67,4 +82,6 @@ def main():
 		current_eth_value = write_current_eth_value(eth_price_list)
 	elif option == 4: #Save today's ETH Progress
 		save_for_day(current_eth_value)
+	elif option == 5: #Short Nano
+		short()
 main()
