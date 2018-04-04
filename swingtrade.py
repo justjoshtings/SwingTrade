@@ -26,8 +26,8 @@ def write_current_eth_value(eth_price_list):
 	current_eth_value = float(input("Current ETH price: "))
 	new_eth_price_list = numpy.append(eth_price_list, current_eth_value)
 	print(new_eth_price_list)
-	numpy.savetxt('ETH_price.csv', new_eth_price_list, delimiter =',')
-	return print("Sucess!")
+	numpy.savetxt('ETH_price.csv', new_eth_price_list, delimiter = ',')
+	return print('Success!!')
 
 def current_eth_value_insys():
 	eth_price_list = numpy.loadtxt('ETH_price.csv', delimiter=',')
