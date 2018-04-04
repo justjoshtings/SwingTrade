@@ -41,12 +41,26 @@ def save_for_day(current_eth_value):
 	current_eth_2 = float(input("Pool ETH: "))
 	total_eth_today = current_eth_1 + current_eth_2
 	profit_list = numpy.append(last_eth_value_lst, total_eth_today)
-	numpy.savetxt('profit.csv', profit_list, delimiter = ',')
+	numpy.savetxt('profit02.csv', profit_list, delimiter = ',')
+
+	last_NANO_value_lst = numpy.loadtxt('profit.csv', delimiter=',')
+	last_NANO_value = last_NANO_value_lst[-1]
+
+	current_NANO_1 = float(input("Current NANO: "))
+	current_NANO_2 = float(input("Pool NANO: "))
+	total_NANO_today = current_NANO_1 + current_NANO_2
+	profit_list = numpy.append(last_NANO_value_lst, total_NANO_today)
+	numpy.savetxt('profit02.csv', profit_list, delimiter = ',')
+
+
 
 	profit_since_last = total_eth_today - last_eth_value
 	dollar_value = profit_since_last*current_eth_value
 
-	print("Today's Profits\n-----------------\nETH Profit: {} | Percent Profit: {} | Dollar Value: {}".format(profit_since_last, (profit_since_last/last_eth_value)*100, dollar_value))
+	profit_since_last_2 = total_NANO_today - last_NANO_value
+	dollar_value_2 = profit_since_last_2*current_NANO_value
+
+	print("Today's Profits\n-----------------\nETH Profit: {} | Percent Profit: {} | Dollar Value: {}\nNANO Profit: {} | Percent Profit: {}".format(profit_since_last, (profit_since_last/last_eth_value)*100, dollar_value, profit_since_last_2, (profit_since_last_2/last_NANO_value)*100))
 	return
 
 def short():
