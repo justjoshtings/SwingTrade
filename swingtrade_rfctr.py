@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-class Crypto:
+class Crypto: #Class: 'Crypto' | Has methods: set_name, get_name, set_price, get_price
 	def __init__(self, name, price):
 		self.__name = name
 		self.__price = price
@@ -24,7 +24,7 @@ class Crypto:
 	def __str__(self):
 		return "Crypto Name: {} | Price: {}".format(self.__name, self.__price)
 
-class ETH(Crypto):
+class ETH(Crypto): #Subclass of 'Crypto': 'ETH' | Has methods: save_price
 	def __init__(self):
 		price_list = np.loadtxt('ETH_price.csv', delimiter=',')
 		price = price_list[-1]
@@ -42,7 +42,7 @@ class ETH(Crypto):
 	def __str__(self):
 		return "Crypto Name: {} | Price: ${}".format(self.get_name(), self.get_price())
 
-class NANO(Crypto):
+class NANO(Crypto): #Subclass of 'Crypto': 'NANO' | Has methods: save_price
 	def __init__(self):
 		price_list = np.loadtxt('NANO_price.csv', delimiter=',')
 		price = price_list[-1]
@@ -60,7 +60,7 @@ class NANO(Crypto):
 	def __str__(self):
 		return "Crypto Name: {} | Price: ${}".format(self.get_name(), self.get_price())
 
-class Action:
+class Action: #Class: 'Action' | Has methods: set_action, get_action
 	def __init__(self, action_type):
 		self.__action_type = action_type
 
@@ -124,7 +124,49 @@ class ShortIt(Action):
 		return "Action Type: {}".format(self.get_action())
 
 class Calculate(Action):
-	pass
+	def __init__(self, initial_value_eth, initial_value_nano):
+		Action.__init__(self, 'Calculate')
+		self.__initial_value_eth = initial_value_eth
+		self.__initial_value_nano = initial_value_nano
+
+	def set_initial_eth(self, initial_value_eth):
+		self.__initial_value_eth = initial_value_eth
+
+	def set_initial_nano(self, initial_value_nano):
+		self.__initial_value_nano = initial_value_nano
+
+	def get_initial_eth(self):
+		return self.__initial_value_eth
+
+	def get_initial_nano(self):
+		return self.__initial_value_nano
+
+	def __repr__(self):
+		return "Calculate('{}', '{}')".format(self.get_initial_eth(), self.get_initial_nano())
+
+	def __str__(self):
+		return "Action Type: {} | ETH Initial Amount: {:.6f} | Nano Initial Amount: {:.2f}".format(self.get_action(), self.get_initial_eth(), self.get_initial_nano())
+
+class ChooseCoin(Action):
+	def __init__(self):
+		Action.__init__(self, 'ChooseCoin')
+
+	def set_coin_list(self, coin_list):
+		self.__coin_list = coin_list
+
+	def get_coin_list(self):
+		return self.__coin_list
+
+	def choosing(self, coin_list):
+		self.__coin_list = coin_list
+		print("Coins available:\n")
+		for i in range(len(self.__coin_list)):
+			print("{}: {}\n".format(i+1, self.__coin_list[i].get_name()))
+		try:
+			self.__which_coin = int(input("Enter coin option: "))
+		except ValueError as ve:
+			print("Enter integers only!")
+		return self.__which_coin
 
 class SaveForDay(Action):
 	pass
@@ -146,16 +188,24 @@ def main():
 				ShortIt().action()
 				break
 			elif option == 3:
-				pass
+				#Do you want to change initial values?
+				which_coin = ChooseCoin().choosing(coin_list)
+				while True:
+					if which_coin == 1:
+						pass # Change initial value
+						break
+					elif which_coin == 2:
+						pass # Change initial value
+						break
+					else:
+						print("Enter a valid option!")
+				initial_value_eth = 0.1062365+0.00133461+0.25577442
+				initial_value_nano = 26.23
+				test1 = Calculate(initial_value_eth, initial_value_nano)
+				print(test1)
 				break
 			elif option == 4:
-				print("Coins available:\n")
-				for i in range(len(coin_list)):
-					print("{}: {}\n".format(i+1, coin_list[i].get_name()))
-				try:
-					which_coin = int(input("Enter coin option: "))
-				except ValueError as ve:
-					print("Enter integers only!")
+				which_coin = ChooseCoin().choosing(coin_list)
 				while True:
 					if which_coin == 1:
 						print(coin_list[0])
