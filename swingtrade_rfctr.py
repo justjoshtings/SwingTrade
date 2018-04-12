@@ -1,4 +1,5 @@
 import numpy
+import sys
 
 class Crypto:
 	def __init__(self, name, price):
@@ -29,7 +30,7 @@ class ETH(Crypto):
 		price = price_list[-1]
 		Crypto.__init__(self, 'ETH', price)
 
-	def save_price():
+	def save_price(self):
 		price_list = numpy.loadtxt('ETH_price.csv', delimiter=',')
 		price = float(input("Current ETH price: "))
 		new_price_list = numpy.append(price_list, price)
@@ -47,7 +48,7 @@ class NANO(Crypto):
 		price = price_list[-1]
 		Crypto.__init__(self, 'NANO', price)
 
-	def save_price():
+	def save_price(self):
 		price_list = numpy.loadtxt('NANO_price.csv', delimiter=',')
 		price = float(input("Current NANO price: "))
 		new_price_list = numpy.append(price_list, price)
@@ -79,7 +80,7 @@ class SwingIt(Action):
 	def __init__(self):
 		Action.__init__(self, 'SwingIt')
 
-	def action():
+	def action(self):
 		fee = 0.1
 		try: 
 			buy_in_price = float(input("Buy In Price: "))
@@ -101,7 +102,7 @@ class ShortIt(Action):
 	def __init__(self):
 		Action.__init__(self, 'ShortIt')
 
-	def action():
+	def action(self):
 		fee = 0.1
 		try:
 			sell_price = float(input("Sell Price: "))
@@ -129,8 +130,6 @@ class SaveForDay(Action):
 	pass
 
 def main():
-	# Eth = ETH()
-	# Nano = NANO()
 	coin_list = [ETH(), NANO()]
 	again = 'y'
 	while again == 'y':
@@ -141,10 +140,10 @@ def main():
 			except ValueError as ve:
 				print("Enter integers only!")
 			if option == 1:
-				SwingIt.action()
+				SwingIt().action()
 				break
 			elif option == 2:
-				ShortIt.action()
+				ShortIt().action()
 				break
 			elif option == 3:
 				pass
@@ -159,19 +158,27 @@ def main():
 					print("Enter integers only!")
 				while True:
 					if which_coin == 1:
-						pass
+						print(coin_list[0])
+						coin_list[0].save_price()
+						coin_list[0] = ETH()
+						print(coin_list[0])
 						break
 					elif which_coin == 2:
-						pass
+						print(coin_list[1])
+						coin_list[1].save_price()
+						coin_list[1] = NANO()
+						print(coin_list[1])
 						break
 					else:
 						print("Enter a valid option!")
 			elif option == 5:
 				pass
 				break
+			elif option == 6:
+				sys.exit("Quitting program...")
+				break
 			else:
 				print("Enter a valid option: [1 to 5]")
-
 		again = str(input("Do you want to perform another action: "))
 
 main()
