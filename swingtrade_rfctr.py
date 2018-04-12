@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import sys
 
 class Crypto:
@@ -26,15 +26,15 @@ class Crypto:
 
 class ETH(Crypto):
 	def __init__(self):
-		price_list = numpy.loadtxt('ETH_price.csv', delimiter=',')
+		price_list = np.loadtxt('ETH_price.csv', delimiter=',')
 		price = price_list[-1]
 		Crypto.__init__(self, 'ETH', price)
 
 	def save_price(self):
-		price_list = numpy.loadtxt('ETH_price.csv', delimiter=',')
+		price_list = np.loadtxt('ETH_price.csv', delimiter=',')
 		price = float(input("Current ETH price: "))
-		new_price_list = numpy.append(price_list, price)
-		numpy.savetxt('ETH_price.csv', new_price_list, delimiter = ',')
+		new_price_list = np.append(price_list, price)
+		np.savetxt('ETH_price.csv', new_price_list, delimiter = ',')
 
 	def __repr__(self):
 		return "ETH()"
@@ -44,15 +44,15 @@ class ETH(Crypto):
 
 class NANO(Crypto):
 	def __init__(self):
-		price_list = numpy.loadtxt('NANO_price.csv', delimiter=',')
+		price_list = np.loadtxt('NANO_price.csv', delimiter=',')
 		price = price_list[-1]
 		Crypto.__init__(self, 'NANO', price)
 
 	def save_price(self):
-		price_list = numpy.loadtxt('NANO_price.csv', delimiter=',')
+		price_list = np.loadtxt('NANO_price.csv', delimiter=',')
 		price = float(input("Current NANO price: "))
-		new_price_list = numpy.append(price_list, price)
-		numpy.savetxt('NANO_price.csv', new_price_list, delimiter = ',')
+		new_price_list = np.append(price_list, price)
+		np.savetxt('NANO_price.csv', new_price_list, delimiter = ',')
 
 	def __repr__(self):
 		return "NANO()"
