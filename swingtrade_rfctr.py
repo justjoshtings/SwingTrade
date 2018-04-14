@@ -187,10 +187,15 @@ class ChooseCoin(Action):
 		print("Coins available:\n")
 		for i in range(len(self.__coin_list)):
 			print("{}: {}\n".format(i+1, self.__coin_list[i].get_name()))
-		try:
-			self.__which_coin = int(input("Enter coin option: "))
-		except ValueError as ve:
-			print("Enter integers only!")
+		while True:
+			try:
+				self.__which_coin = int(input("Enter coin option: "))
+				if self.__which_coin == 1 or self.__which_coin == 2:
+					break
+				else:
+					print("Enter valid option!")
+			except ValueError as ve:
+				print("Enter integers only!")
 		return self.__which_coin
 
 	def __repr__(self):
@@ -286,8 +291,28 @@ class SaveForDay(Action):
 	def __init__(self):
 		Action.__init__(self, 'SaveForDay')
 
-	def saving(self): #Choose which coin to input and calculate profits based on last entry
-		pass
+	def saving(self, which_coin): #Choose which coin to input and calculate profits based on last entry
+		self.__which_coin = which_coin
+		self.__last_value_lst = np.loadtxt('profit0{}.csv'.format(self.__which_coin), delimiter=',')
+		self.__last_value = float(self.__last_value_lst[-1])
+
+		self.__current_amt = float(input("Current coin amount: "))
+		self.__current_amt_pool = float(input("Current pool amount: "))
+		self.__total_today = self.__current_amt + self.__current_amt_pool
+
+		self.__profit_list = np.append(self.__last_value_lst, self.__total_today)
+		np.savetxt('profit0{}.csv'.format(self.__which_coin), self.__profit_list, delimiter = ',')
+
+		self.__coin_profit = self.__total_today - self.__last_value
+		self.__percent_profit = (self.__coin_profit/self.__last_value)*100
+
+		print("Today's Profits\n-----------------\nCoin Profit: {:.6f} | Percent Profit: {:.2f}%".format(self.__coin_profit, self.__percent_profit))
+
+	def __repr__(self):
+		return "SaveForDay()"
+
+	def __str__(self):
+		return "Action Type: {} | Has Methods: 'saving()'".format(self.get_action())
 
 #If need to add new coin:
 	#1. Add new coin subclass
@@ -325,23 +350,19 @@ def main():
 				break
 			elif option == 4: #Option to change current coin/USD pairing values
 				which_coin = ChooseCoin().choosing(coin_list)
-				while True:
-					if which_coin == 1:
-						print(coin_list[0])
-						coin_list[0].save_price()
-						coin_list[0] = ETH()
-						print(coin_list[0])
-						break
-					elif which_coin == 2:
-						print(coin_list[1])
-						coin_list[1].save_price()
-						coin_list[1] = NANO()
-						print(coin_list[1])
-						break
-					else:
-						print("Enter a valid option!")
+				if which_coin == 1:
+					print(coin_list[0])
+					coin_list[0].save_price()
+					coin_list[0] = ETH()
+					print(coin_list[0])
+				elif which_coin == 2:
+					print(coin_list[1])
+					coin_list[1].save_price()
+					coin_list[1] = NANO()
+					print(coin_list[1])
 			elif option == 5: #Option to enter end of day progress to track daily progress
-				pass
+				which_coin = ChooseCoin().choosing(coin_list)
+				SaveForDay().saving(which_coin)
 				break
 			elif option == 6: #Change initial investment value amounts
 				GetInitial().changing_initial()
@@ -354,5 +375,3 @@ def main():
 		again = str(input("Do you want to perform another action: "))
 
 main()
-
-

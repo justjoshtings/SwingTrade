@@ -51,7 +51,7 @@ def save_for_day(current_eth_value, current_NANO_value):
 	profit_list = numpy.append(last_eth_value_lst, total_eth_today)
 	numpy.savetxt('profit02.csv', profit_list, delimiter = ',')
 
-	last_NANO_value_lst = numpy.loadtxt('profit.csv', delimiter=',')
+	last_NANO_value_lst = numpy.loadtxt('profit02.csv', delimiter=',')
 	last_NANO_value = last_NANO_value_lst[-1]
 
 	current_NANO_1 = float(input("Current NANO: "))
