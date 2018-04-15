@@ -162,7 +162,7 @@ class Calculate(Action):
 		self.__current_total = self.__coin_amt + self.__coin_amt_pool
 		self.__current_profit = self.__current_total - float(self.__initial_value)
 		self.__percent_profit = (self.__current_profit/float(self.__initial_value))*100
-		self.__dollar_profit_value = self.__percent_profit * self.__price
+		self.__dollar_profit_value = self.__current_profit * self.__price
 		self.__dollar_total_value = self.__current_total * self.__price
 		print("Profit ({}): {:.6f} | Percent Profit: {:.2f}% | Dollar Value: ${:.2f} | Total Dollar Value ${:.2f}".format(self.get_coin_name(self.__which_coin), self.__current_profit, self.__percent_profit, self.__dollar_profit_value, self.__dollar_total_value))
 
