@@ -117,6 +117,8 @@ class ShortIt(Action):
 			print("Sell at {:.6f} | Buy back at {:.6f} | Gain {:.3f} Nanos | Breakeven Buyback: {:.6f}".format(sell_price, buy_back_price, profit, breakeven_price))
 		except ValueError as ve:
 			print("Enter valid numbers!")
+		except ZeroDivisionError as zde:
+			print("Can't divide by 0!")
 
 	def __repr__(self):
 		return "ShortIt()"
