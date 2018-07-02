@@ -61,6 +61,42 @@ class NANO(Crypto): #Subclass of 'Crypto': 'NANO' | Has methods: save_price
 	def __str__(self):
 		return "Crypto Name: {} | Price: ${} | Has Methods: 'save_price()'".format(self.get_name(), self.get_price())
 
+class XLM(Crypto): #Subclass of 'Crypto': 'XLM' | Has methods: save_price
+	def __init__(self):
+		self.__price_list = np.loadtxt('XLM_price.csv', delimiter=',')
+		self.__price = self.__price_list[-1]
+		Crypto.__init__(self, 'XLM', self.__price)
+
+	def save_price(self):
+		self.__price_list = np.loadtxt('XLM_price.csv', delimiter=',')
+		self.__price = float(input("Current XLM price: "))
+		self.__new_price_list = np.append(self.__price_list, self.__price)
+		np.savetxt('XLM_price.csv', self.__new_price_list, delimiter = ',')
+
+	def __repr__(self):
+		return "XLM()"
+
+	def __str__(self):
+		return "Crypto Name: {} | Price: ${} | Has Methods: 'save_price()'".format(self.get_name(), self.get_price())
+
+class IOTA(Crypto): #Subclass of 'Crypto': 'IOTA' | Has methods: save_price
+	def __init__(self):
+		self.__price_list = np.loadtxt('IOTA_price.csv', delimiter=',')
+		self.__price = self.__price_list[-1]
+		Crypto.__init__(self, 'IOTA', self.__price)
+
+	def save_price(self):
+		self.__price_list = np.loadtxt('IOTA_price.csv', delimiter=',')
+		self.__price = float(input("Current IOTA price: "))
+		self.__new_price_list = np.append(self.__price_list, self.__price)
+		np.savetxt('IOTA_price.csv', self.__new_price_list, delimiter = ',')
+
+	def __repr__(self):
+		return "IOTA()"
+
+	def __str__(self):
+		return "Crypto Name: {} | Price: ${} | Has Methods: 'save_price()'".format(self.get_name(), self.get_price())
+
 class Action: #Class: 'Action' | Has methods: set_action, get_action
 	def __init__(self, action_type):
 		self.__action_type = action_type
@@ -88,8 +124,8 @@ class SwingIt(Action):
 			percent_delta = float(input("Percent Incrase: "))
 			target_price = buy_in_price * (1+(percent_delta/100))
 			breakeven = buy_in_price*(1+(fee/100))
-			print("Buy In:{:.6f} | Percent Increase:{:.2f}%".format(buy_in_price, percent_delta))
-			print("Target Price:{:.6f} | Breakeven Price: {:.6f}".format(target_price, breakeven))
+			print("Buy In:{:.8f} | Percent Increase:{:.2f}%".format(buy_in_price, percent_delta))
+			print("Target Price:{:.8f} | Breakeven Price: {:.8f}".format(target_price, breakeven))
 		except ValueError as ve:
 			print("Enter valid numbers")
 
@@ -114,7 +150,7 @@ class ShortIt(Action):
 			buy_back_amt = sold_amt/buy_back_price
 			profit = buy_back_amt - amount
 			breakeven_price = sell_price*(1-fee/100)
-			print("Sell at {:.6f} | Buy back at {:.6f} | Gain {:.3f} Nanos | Breakeven Buyback: {:.6f}".format(sell_price, buy_back_price, profit, breakeven_price))
+			print("Sell at {:.8f} | Buy back at {:.8f} | Gain {:.8f} | Breakeven Buyback: {:.8f}".format(sell_price, buy_back_price, profit, breakeven_price))
 		except ValueError as ve:
 			print("Enter valid numbers!")
 		except ZeroDivisionError as zde:
@@ -156,6 +192,12 @@ class Calculate(Action):
 		elif which_coin == 2:
 			self.__coin_name = 'NANO'
 			return self.__coin_name
+		elif which_coin == 3:
+			self.__coin_name = 'XLM'
+			return self.__coin_name
+		elif which_coin == 4:
+			self.__coin_name = 'IOTA'
+			return self.__coin_name
 
 	def calculating(self):
 		self.__coin_amt = float(input("Enter coin amount: "))
@@ -192,7 +234,7 @@ class ChooseCoin(Action):
 		while True:
 			try:
 				self.__which_coin = int(input("Enter coin option: "))
-				if self.__which_coin == 1 or self.__which_coin == 2:
+				if self.__which_coin == 1 or self.__which_coin == 2 or self.__which_coin == 3 or self.__which_coin == 4:
 					break
 				else:
 					print("Enter valid option!")
@@ -212,7 +254,7 @@ class GetInitial(Action):
 
 	#Setting initial values into a dict, then into a dataframe and saving into a .csv file
 	def saving_initial(self): 
-		initials = {'ETH': [0.363346, ], 'NANO': [26.23, ]}
+		initials = {'ETH': [0.363346, ], 'NANO': [26.23, ], 'XLM': [516.48, ], 'IOTA': [100, ]}
 		df = pd.DataFrame(data = initials)
 		try: 
 			df.to_csv('initials.csv', encoding = 'utf-8', index = False)
@@ -226,11 +268,11 @@ class GetInitial(Action):
 				if change_values == 'y':
 					while True:
 						try:
-							self.__coin = int(input("Which coin do you want to change?\n1. ETH | 2. NANO : "))
+							self.__coin = int(input("Which coin do you want to change?\n1. ETH | 2. NANO | 3. XLM | 4. IOTA: "))
 							if self.__coin == 1:
 								try:
 									new_initial_amt = float(input("New initial amount for ETH: "))					
-									initials = {'ETH': [new_initial_amt, ], 'NANO': [26.23, ]}
+									initials = {'ETH': [new_initial_amt, ], 'NANO': [26.23, ], 'XLM': [516.48, ], 'IOTA': [100, ]}
 									df = pd.DataFrame(data = initials)
 									df.to_csv('initials.csv', encoding = 'utf-8', index = False)
 									print("Values Changed")
@@ -242,7 +284,31 @@ class GetInitial(Action):
 							elif self.__coin == 2:
 								try:
 									new_initial_amt = float(input("New initial amount for NANO: "))				
-									initials = {'ETH': [0.363346, ], 'NANO': [new_initial_amt, ]}
+									initials = {'ETH': [0.363346, ], 'NANO': [new_initial_amt, ], 'XLM': [516.48, ], 'IOTA': [100, ]}
+									df = pd.DataFrame(data = initials)
+									df.to_csv('initials.csv', encoding = 'utf-8', index = False)
+									print("Values Changed")
+								except ValueError as ve:
+									print("Enter a valid number!")
+								except IOError:
+									print("Error saving initial values to 'initials.csv'")
+								break
+							elif self.__coin == 3:
+								try:
+									new_initial_amt = float(input("New initial amount for NANO: "))				
+									initials = {'ETH': [0.363346, ], 'NANO': [26.23, ], 'XLM': [new_initial_amt, ], 'IOTA': [100, ]}
+									df = pd.DataFrame(data = initials)
+									df.to_csv('initials.csv', encoding = 'utf-8', index = False)
+									print("Values Changed")
+								except ValueError as ve:
+									print("Enter a valid number!")
+								except IOError:
+									print("Error saving initial values to 'initials.csv'")
+								break
+							elif self.__coin == 4:
+								try:
+									new_initial_amt = float(input("New initial amount for NANO: "))				
+									initials = {'ETH': [0.363346, ], 'NANO': [26.23, ], 'XLM': [516.48, ], 'IOTA': [new_initial_amt, ]}
 									df = pd.DataFrame(data = initials)
 									df.to_csv('initials.csv', encoding = 'utf-8', index = False)
 									print("Values Changed")
@@ -279,6 +345,18 @@ class GetInitial(Action):
 		elif self.__coin_choice == 2:
 			try:
 				initial_value = df.loc[1][1]
+				return initial_value
+			except NameError:
+				print("File: 'initials.csv' did not load properly")
+		elif self.__coin_choice == 3:
+			try:
+				initial_value = df.loc[1][2]
+				return initial_value
+			except NameError:
+				print("File: 'initials.csv' did not load properly")
+		elif self.__coin_choice == 4:
+			try:
+				initial_value = df.loc[1][3]
 				return initial_value
 			except NameError:
 				print("File: 'initials.csv' did not load properly")
@@ -323,7 +401,7 @@ class SaveForDay(Action):
 	#4. Add additional 'initial_value_coin' values
 	
 def main():
-	coin_list = [ETH(), NANO()] #Current coin list, add additional ones as needed
+	coin_list = [ETH(), NANO(), XLM(), IOTA()] #Current coin list, add additional ones as needed
 	again = 'y'
 	while again == 'y':
 		while True:
@@ -342,9 +420,16 @@ def main():
 				which_coin = ChooseCoin().choosing(coin_list)
 				if which_coin == 1:
 					price = ETH().get_price()
+					initial_value = GetInitial().getting_initial(which_coin)
 				elif which_coin == 2:
 					price = NANO().get_price()
-				initial_value = GetInitial().getting_initial(which_coin)
+					initial_value = GetInitial().getting_initial(which_coin)
+				elif which_coin == 3:
+					price = XLM().get_price()
+					initial_value = GetInitial().getting_initial(which_coin)
+				elif which_coin == 4:
+					price = IOTA().get_price()
+					initial_value = GetInitial().getting_initial(which_coin)
 				try:
 					Calculate(which_coin, initial_value, price).calculating()
 				except NameError:
@@ -362,6 +447,16 @@ def main():
 					coin_list[1].save_price()
 					coin_list[1] = NANO()
 					print(coin_list[1])
+				elif which_coin == 3:
+					print(coin_list[2])
+					coin_list[2].save_price()
+					coin_list[2] = XLM()
+					print(coin_list[2])
+				elif which_coin == 4:
+					print(coin_list[3])
+					coin_list[3].save_price()
+					coin_list[3] = IOTA()
+					print(coin_list[3])
 			elif option == 5: #Option to enter end of day progress to track daily progress
 				which_coin = ChooseCoin().choosing(coin_list)
 				SaveForDay().saving(which_coin)
